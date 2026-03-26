@@ -30,11 +30,4 @@ git clone https://github.com/Sudhanshu-Malhotra/TELEPROMPTER.git
 
 > **Note on Voice Recognition:** The Web Speech API works best on Google Chrome or Microsoft Edge. Using this app through a secure context (localhost or HTTPS) is required for most browsers to allow continuous microphone access.
 
-## 🌍 Hosting it Live
-This repository is pre-configured as a standard Spring Boot application. You can deploy it seamlessly to platforms like:
 
-* **Render.com**: Connect this GitHub repo, use the build command `./gradlew build` and start command `./gradlew bootRun`.
-* **Railway.app**: Deploy directly from Git; it will auto-detect the Gradle environment.
-
----
-*Built with Spring Boot 3 & Vanilla JS*
