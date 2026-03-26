@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const videoElem = document.getElementById("webcam-preview");
     const btnCamera = document.getElementById("btn-camera");
     const btnRecord = document.getElementById("btn-record");
+    const btnRecordAudio = document.getElementById("btn-record-audio");
+    const btnAutoScroll = document.getElementById("btn-autoscroll");
     const btnDownload = document.getElementById("btn-download");
     const btnVoice = document.getElementById("btn-voice");
     
@@ -20,8 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let isRecording = false;
     let fileUrl = null;
 
+    let isAudioRecording = false;
+    let audioRecorder = null;
+    let audioChunks = [];
+
     let isVoiceTracking = false;
     let recognition = null;
+    
+    let isAutoScrolling = false;
+    let scrollInterval = null;
     
     let isDragging = false;
     let currentX = 0;
@@ -86,9 +95,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 // Show download button
                 btnDownload.style.display = 'inline-block';
+                btnDownload.dataset.fileType = 'video';
                 
                 // Reset button style
-                btnRecord.innerHTML = '<i class="fa-solid fa-circle"></i> Record';
+                btnRecord.innerHTML = '<i class="fa-solid fa-circle"></i> Rec Video';
                 btnRecord.classList.remove('recording');
             };
 
@@ -104,20 +114,74 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // --- Audio Recording ---
+    btnRecordAudio.addEventListener('click', () => {
+        if (!stream) {
+            alert("Please start the camera/mic first!");
+            return;
+        }
+
+        if (!isAudioRecording) {
+            // Start recording audio
+            audioChunks = [];
+            let options = { mimeType: 'audio/webm' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = {};
+            }
+            audioRecorder = new MediaRecorder(stream, options);
+
+            audioRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
+
+            audioRecorder.onstop = () => {
+                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                if (fileUrl) URL.revokeObjectURL(fileUrl);
+                fileUrl = URL.createObjectURL(blob);
+                
+                // Show download button
+                btnDownload.style.display = 'inline-block';
+                btnDownload.dataset.fileType = 'audio';
+                
+                // Reset button style
+                btnRecordAudio.innerHTML = '<i class="fa-solid fa-file-audio"></i> Rec Audio';
+                btnRecordAudio.classList.remove('recording');
+            };
+
+            audioRecorder.start();
+            isAudioRecording = true;
+            btnRecordAudio.innerHTML = '<i class="fa-solid fa-stop"></i> Stop Audio';
+            btnRecordAudio.classList.add('recording');
+            btnDownload.style.display = 'none';
+        } else {
+            // Stop recording
+            audioRecorder.stop();
+            isAudioRecording = false;
+        }
+    });
+
     // --- Download Recording ---
     btnDownload.addEventListener('click', () => {
         if (fileUrl) {
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = fileUrl;
+            
+            const isAudio = btnDownload.dataset.fileType === 'audio';
+            const ext = isAudio ? 'webm' : 'webm';
+            const prefix = isAudio ? 'Audio' : 'Video';
+            
             // Add a proper timestamp to the file name
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            a.download = `AuraPrompter_${timestamp}.webm`;
+            a.download = `AuraPrompter_${prefix}_${timestamp}.${ext}`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(fileUrl);
             fileUrl = null;
             btnDownload.style.display = 'none';
+            btnDownload.dataset.fileType = '';
         }
     });
 
@@ -182,6 +246,28 @@ document.addEventListener("DOMContentLoaded", () => {
             recognition.stop();
             btnVoice.classList.remove('track-active');
             btnVoice.innerHTML = '<i class="fa-solid fa-microphone"></i> Track Voice';
+        }
+    });
+
+    // --- Auto Scroll ---
+    btnAutoScroll.addEventListener('click', () => {
+        if (!isAutoScrolling) {
+            isAutoScrolling = true;
+            btnAutoScroll.innerHTML = '<i class="fa-solid fa-pause"></i> Pause Scroll';
+            btnAutoScroll.classList.add('btn-success');
+            btnAutoScroll.classList.remove('btn-secondary');
+            
+            scrollInterval = setInterval(() => {
+                const speed = parseInt(scrollSpeedInput.value);
+                // behavior auto ensures smooth continuous scroll instead of jumpy
+                prompterText.scrollBy({ top: speed / 2, behavior: 'auto' });
+            }, 50); // every 50ms
+        } else {
+            isAutoScrolling = false;
+            clearInterval(scrollInterval);
+            btnAutoScroll.innerHTML = '<i class="fa-solid fa-play"></i> Auto Scroll';
+            btnAutoScroll.classList.remove('btn-success');
+            btnAutoScroll.classList.add('btn-secondary');
         }
     });
 
