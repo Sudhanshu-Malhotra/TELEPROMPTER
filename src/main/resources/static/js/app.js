@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Elements ---
     const videoElem = document.getElementById("webcam-preview");
     const btnCamera = document.getElementById("btn-camera");
+    const btnFullscreen = document.getElementById("btn-fullscreen");
+    const btnMirror = document.getElementById("btn-mirror");
     const btnRecord = document.getElementById("btn-record");
     const btnRecordAudio = document.getElementById("btn-record-audio");
     const btnAutoScroll = document.getElementById("btn-autoscroll");
@@ -290,17 +292,40 @@ document.addEventListener("DOMContentLoaded", () => {
         prompterText.style.fontSize = `${e.target.value}px`;
     });
 
+    // --- Fullscreen and Mirror ---
+    btnFullscreen.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.error("Fullscreen error: ", err);
+            });
+            btnFullscreen.innerHTML = '<i class="fa-solid fa-compress"></i>';
+        } else {
+            document.exitFullscreen();
+            btnFullscreen.innerHTML = '<i class="fa-solid fa-expand"></i>';
+        }
+    });
+
+    btnMirror.addEventListener('click', () => {
+        prompterText.classList.toggle('mirrored');
+        if (prompterText.classList.contains('mirrored')) {
+            btnMirror.classList.remove('btn-primary');
+            btnMirror.classList.add('btn-success');
+        } else {
+            btnMirror.classList.remove('btn-success');
+            btnMirror.classList.add('btn-primary');
+        }
+    });
+
     // --- Draggable Teleprompter Container ---
     dragHandle.addEventListener('mousedown', dragStart);
     document.addEventListener('mouseup', dragEnd);
     document.addEventListener('mousemove', drag);
 
     function dragStart(e) {
-        initialX = e.clientX - xOffset;
-        initialY = e.clientY - yOffset;
-
-        if (e.target === dragHandle) {
+        if (e.target.closest('#drag-handle')) {
             isDragging = true;
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
         }
     }
 

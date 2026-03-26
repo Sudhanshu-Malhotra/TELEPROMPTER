@@ -102,6 +102,11 @@ body {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     outline: none;
     flex-grow: 1;
+    transition: transform 0.3s ease;
+}
+
+.prompter-text.mirrored {
+    transform: scaleX(-1);
 }
 
 .prompter-text::-webkit-scrollbar {
