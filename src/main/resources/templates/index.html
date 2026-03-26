@@ -42,6 +42,9 @@
             <button class="btn btn-primary" id="btn-mirror" title="Mirror Text">
                 <i class="fa-solid fa-clock-rotate-left"></i>
             </button>
+            <button class="btn btn-primary" id="btn-settings" title="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
             <button class="btn btn-secondary" id="btn-autoscroll" title="Auto Scroll">
                 <i class="fa-solid fa-play"></i> Auto Scroll
             </button>
@@ -67,6 +70,34 @@
         </div>
     </div>
 
-    <script th:src="@{/js/app.js(v=3)}"></script>
+    <!-- Premium Settings Modal -->
+    <div id="settings-modal" class="modal glass hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-sliders"></i> Pro Settings</h3>
+                <button id="close-settings" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label>Text Color</label>
+                    <input type="color" id="color-text" value="#ffffff">
+                </div>
+                <div class="setting-group">
+                    <label>Background Opacity</label>
+                    <input type="range" id="opacity-bg" min="0" max="100" value="50">
+                </div>
+                <div class="setting-group">
+                    <label>Line Height</label>
+                    <input type="range" id="line-height" min="10" max="25" value="14"> <!-- 1.4 -->
+                </div>
+                <div class="setting-group">
+                    <label>Reading Width (Margins)</label>
+                    <input type="range" id="margin-width" min="10" max="50" value="30"> <!-- 30px padding -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/app.js(v=4)}"></script>
 </body>
 </html>

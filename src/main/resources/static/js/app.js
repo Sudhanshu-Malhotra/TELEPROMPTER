@@ -292,6 +292,42 @@ document.addEventListener("DOMContentLoaded", () => {
         prompterText.style.fontSize = `${e.target.value}px`;
     });
 
+    // --- Premium Settings Modal ---
+    const btnSettings = document.getElementById("btn-settings");
+    const settingsModal = document.getElementById("settings-modal");
+    const closeSettings = document.getElementById("close-settings");
+
+    const colorTextInput = document.getElementById("color-text");
+    const opacityBgInput = document.getElementById("opacity-bg");
+    const lineHeightInput = document.getElementById("line-height");
+    const marginWidthInput = document.getElementById("margin-width");
+
+    btnSettings.addEventListener('click', () => {
+        settingsModal.classList.remove('hidden');
+    });
+
+    closeSettings.addEventListener('click', () => {
+        settingsModal.classList.add('hidden');
+    });
+
+    colorTextInput.addEventListener('input', (e) => {
+        prompterText.style.color = e.target.value;
+    });
+
+    opacityBgInput.addEventListener('input', (e) => {
+        const opacity = e.target.value / 100;
+        prompterContainer.style.background = `rgba(0, 0, 0, ${opacity})`;
+    });
+
+    lineHeightInput.addEventListener('input', (e) => {
+        prompterText.style.lineHeight = e.target.value / 10;
+    });
+
+    marginWidthInput.addEventListener('input', (e) => {
+        prompterText.style.paddingLeft = `${e.target.value}px`;
+        prompterText.style.paddingRight = `${e.target.value}px`;
+    });
+
     // --- Fullscreen and Mirror ---
     btnFullscreen.addEventListener('click', () => {
         if (!document.fullscreenElement) {
