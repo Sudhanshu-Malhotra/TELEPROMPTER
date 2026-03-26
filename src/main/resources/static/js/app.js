@@ -253,23 +253,37 @@ document.addEventListener("DOMContentLoaded", () => {
     btnAutoScroll.addEventListener('click', () => {
         if (!isAutoScrolling) {
             isAutoScrolling = true;
-            btnAutoScroll.innerHTML = '<i class="fa-solid fa-pause"></i> Pause Scroll';
+            btnAutoScroll.innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
             btnAutoScroll.classList.add('btn-success');
             btnAutoScroll.classList.remove('btn-secondary');
             
-            scrollInterval = setInterval(() => {
-                const speed = parseInt(scrollSpeedInput.value);
-                // behavior auto ensures smooth continuous scroll instead of jumpy
-                prompterText.scrollBy({ top: speed / 2, behavior: 'auto' });
-            }, 50); // every 50ms
+            // smooth auto scroll using requestAnimationFrame
+            let lastTime = 0;
+            const scrollStep = (timestamp) => {
+                if (!isAutoScrolling) return;
+                
+                if (!lastTime) lastTime = timestamp;
+                const progress = timestamp - lastTime;
+                
+                if (progress > 20) {
+                    const speed = parseInt(scrollSpeedInput.value);
+                    prompterText.scrollTop += speed / 2;
+                    lastTime = timestamp;
+                }
+                
+                scrollInterval = requestAnimationFrame(scrollStep);
+            };
+            scrollInterval = requestAnimationFrame(scrollStep);
+            
         } else {
             isAutoScrolling = false;
-            clearInterval(scrollInterval);
+            cancelAnimationFrame(scrollInterval);
             btnAutoScroll.innerHTML = '<i class="fa-solid fa-play"></i> Auto Scroll';
             btnAutoScroll.classList.remove('btn-success');
             btnAutoScroll.classList.add('btn-secondary');
         }
     });
+
 
     // --- Settings / Font Size ---
     fontSizeInput.addEventListener('input', (e) => {

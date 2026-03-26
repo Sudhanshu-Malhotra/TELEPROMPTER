@@ -78,6 +78,19 @@ body {
     cursor: grabbing;
 }
 
+.focal-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, rgba(230, 57, 70, 0.8) 50%, transparent 100%);
+    box-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+    z-index: 15;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
 .prompter-text {
     padding: 30px;
     overflow-y: auto;
