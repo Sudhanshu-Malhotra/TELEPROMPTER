@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Teleprompter | Premium Live Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+    <!-- Camera Background -->
+    <div class="camera-container">
+        <video id="webcam-preview" autoplay muted playsinline></video>
+    </div>
+
+    <!-- Draggable Teleprompter Content -->
+    <div id="prompter-container" class="draggable">
+        <div class="prompter-header" id="drag-handle">
+            <i class="fa-solid fa-grip"></i> Drag to Move
+        </div>
+        <div class="prompter-text" id="prompter-text" contenteditable="true" spellcheck="false">
+            Welcome to Aura Teleprompter.
+            Click here to edit your script.
+            You can drag this text anywhere on the screen.
+            Enable voice tracking to let the text scroll as you speak.
+        </div>
+    </div>
+
+    <!-- Controls Dock -->
+    <div class="controls-dock glass">
+        <div class="branding">AURA PROMPTER</div>
+        <div class="controls-buttons">
+            <button class="btn btn-primary" id="btn-camera" title="Toggle Camera">
+                <i class="fa-solid fa-camera"></i>
+            </button>
+            <button class="btn btn-secondary" id="btn-voice" title="Voice Tracking">
+                <i class="fa-solid fa-microphone"></i> Track Voice
+            </button>
+            <button class="btn btn-danger" id="btn-record" title="Record Video">
+                <i class="fa-solid fa-circle"></i> Record
+            </button>
+            <button class="btn btn-success" id="btn-download" title="Download Recording" style="display: none;">
+                <i class="fa-solid fa-download"></i> Save
+            </button>
+        </div>
+        
+        <div class="prompter-settings">
+            <label>Size:</label>
+            <input type="range" id="font-size" min="20" max="100" value="48">
+            <label>Speed:</label>
+            <input type="range" id="scroll-speed" min="1" max="10" value="3">
+        </div>
+    </div>
+
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>
